@@ -1,0 +1,663 @@
+PROLOG PROGRAMS EXTRACTED FROM EXPERIMENTS 1–7
+================================================
+Source PDFs: Experiments 1, 2, 3, 4, 5, 6 and 7.
+This file groups the Prolog facts, rules, complete program examples, and sample queries under their titles.
+Queries are included where shown in the PDFs. Some PDF examples show only a partial rule or task description; these are not silently completed unless the source provides the code.
+
+================================================
+EXPERIMENT 1 — INTRODUCTION TO PROLOG AND FACTS, OBJECTS, PREDICATES, VARIABLES
+================================================
+
+1. Basic Fact Examples
+----------------------
+likes(ram,mango).
+
+parent(john,mary).
+
+2. Multiple Facts
+-----------------
+likes(ram,mango).
+likes(ram,apple).
+likes(ram,orange).
+
+Query:
+?- likes(ram,X).
+
+3. Example Knowledge Base
+-------------------------
+% Students
+student(ram).
+student(sita).
+student(arun).
+
+% Courses
+course(ram, mathematics).
+course(sita, physics).
+course(arun, mathematics).
+
+% Departments
+department(ram, cse).
+department(sita, ece).
+department(arun, cse).
+
+% Likes
+likes(ram,mango).
+likes(sita,apple).
+
+4. Queries for the Knowledge Base
+---------------------------------
+?- student(ram).
+?- student(ravi).
+?- student(X).
+?- course(X, mathematics).
+?- likes(ram, X).
+?- course(Student, Course).
+?- student(X), department(X,cse).
+
+5. Loading the Program
+----------------------
+?- consult('experiment1.pl').
+% Alternatively:
+?- ['experiment1.pl'].
+
+================================================
+EXPERIMENT 2 — RULES AND UNIFICATION IN PROLOG
+================================================
+
+1. Facts and a Grandparent Rule
+-------------------------------
+parent(john,mary).
+parent(mary,david).
+
+grandparent(X,Y) :-
+    parent(X,Z),
+    parent(Z,Y).
+
+Query:
+?- grandparent(john,david).
+
+2. Simple Rule
+--------------
+student(X) :-
+    person(X).
+
+3. Eligibility Rule
+-------------------
+eligible(X) :-
+    student(X),
+    age(X,A),
+    A >= 18.
+
+4. Recursive Ancestor Rule
+--------------------------
+ancestor(X,Y) :-
+    parent(X,Y).
+
+ancestor(X,Y) :-
+    parent(X,Z),
+    ancestor(Z,Y).
+
+5. Facts for Likes and Query
+----------------------------
+likes(ravi, mathematics).
+likes(ravi, physics).
+
+Query:
+?- likes(ravi,X).
+
+6. Unification Queries
+----------------------
+?- X = john.
+?- john = john.
+?- john = mary.
+?- father(X,john) = father(mark,john).
+
+7. Grandparent Example
+----------------------
+parent(ann,bob).
+parent(bob,charles).
+
+grandparent(X,Y) :-
+    parent(X,Z),
+    parent(Z,Y).
+
+Query:
+?- grandparent(ann,charles).
+
+8. University Course Recommendation — Source Facts
+--------------------------------------------------
+completed(raja,python).
+completed(raja,math).
+
+% Query shown in the PDF:
+?- eligible(raja,ai).
+
+Note: The PDF shows the facts and query for this task, but does not show the complete eligible/3 rule.
+
+9. Ancestor Query
+-----------------
+?- ancestor(john,X).
+
+================================================
+EXPERIMENT 3 — SIMPLE ARITHMETIC OPERATIONS, SIMPLE INPUT/OUTPUT AND COMPOUND GOALS
+================================================
+
+1. Arithmetic Evaluation
+------------------------
+?- X is 10+5.
+
+2. Difference Between = and is
+------------------------------
+?- X = 10+5.
+?- X is 10+5.
+
+3. Arithmetic Operator Examples
+-------------------------------
+X is 5+3.
+X is 8-2.
+X is 4*5.
+X is 9/2.
+X is 9//2.
+X is 9 mod 2.
+X is 2**3.
+
+4. Arithmetic Operations on Two Numbers
+---------------------------------------
+calculate(A,B) :-
+    Sum is A+B,
+    Diff is A-B,
+    Mul is A*B,
+    Div is A/B,
+    write('Addition = '), write(Sum), nl,
+    write('Subtraction = '), write(Diff), nl,
+    write('Multiplication = '), write(Mul), nl,
+    write('Division = '), write(Div).
+
+Query:
+?- calculate(20,5).
+
+5. Maximum of Two Numbers
+-------------------------
+maximum(A,B) :-
+    A > B,
+    write(A).
+
+maximum(A,B) :-
+    B >= A,
+    write(B).
+
+Query:
+?- maximum(15,20).
+
+6. Addition Using User Input
+----------------------------
+addition :-
+    write('Enter first number: '),
+    read(A),
+    write('Enter second number: '),
+    read(B),
+    Sum is A+B,
+    write('Sum = '),
+    write(Sum).
+
+Query:
+?- addition.
+
+7. Area of a Circle
+-------------------
+area_circle :-
+    write('Enter radius: '),
+    read(R),
+    Area is 3.14159*R*R,
+    write('Area = '),
+    write(Area).
+
+8. Simple Interest
+------------------
+simple_interest :-
+    write('Principal: '),
+    read(P),
+    write('Rate: '),
+    read(R),
+    write('Time: '),
+    read(T),
+    SI is (P*R*T)/100,
+    write('Simple Interest = '),
+    write(SI).
+
+9. Conjunction (AND)
+--------------------
+student(john).
+student(mary).
+
+hosteller(john).
+hosteller(mary).
+
+eligible(X) :-
+    student(X),
+    hosteller(X).
+
+Query:
+?- eligible(john).
+
+10. Square and Cube
+-------------------
+square_cube(N) :-
+    Square is N*N,
+    Cube is N*N*N,
+    write('Square = '),
+    write(Square), nl,
+    write('Cube = '),
+    write(Cube).
+
+11. Disjunction / Multiple Goals
+--------------------------------
+grade(pass) :-
+    write('Passed').
+
+grade(fail) :-
+    write('Failed').
+
+Query:
+?- grade(pass); grade(fail).
+
+12. Negation
+------------
+student(ram).
+
+not_student(X) :-
+    \+ student(X).
+
+Query:
+?- not_student(raja).
+
+13. Even or Odd
+---------------
+even_odd :-
+    write('Enter Number: '),
+    read(N),
+    R is N mod 2,
+    (
+        R =:= 0 ->
+        write('Even')
+        ;
+        write('Odd')
+    ).
+
+14. Student Database and Passing Rule
+-------------------------------------
+student(rahul).
+student(priya).
+
+marks(rahul,85).
+marks(priya,72).
+
+passed(X) :-
+    student(X),
+    marks(X,M),
+    M >= 50.
+
+Query:
+?- passed(rahul).
+
+15. Voting Program (as shown in the PDF)
+----------------------------------------
+vote :-
+    write('Enter Age: '),
+    read(Age),
+    write('Eligible to Vote').
+
+vote :-
+    write('Not Eligible to Vote').
+
+================================================
+EXPERIMENT 4 — RECURSION IN PROLOG
+================================================
+
+1. Recursive Ancestor Relationship
+-----------------------------------
+parent(john,mary).
+parent(mary,alice).
+parent(alice,bob).
+parent(bob,tom).
+
+ancestor(X,Y) :-
+    parent(X,Y).
+
+ancestor(X,Y) :-
+    parent(X,Z),
+    ancestor(Z,Y).
+
+Query:
+?- ancestor(john,tom).
+
+2. Tower of Hanoi
+-----------------
+hanoi(1,S,D,_) :-
+    write('Move disk from '),
+    write(S),
+    write(' to '),
+    write(D), nl.
+
+hanoi(N,S,D,A) :-
+    N > 1,
+    M is N-1,
+    hanoi(M,S,A,D),
+    hanoi(1,S,D,A),
+    hanoi(M,A,D,S).
+
+Query:
+?- hanoi(3,left,right,middle).
+
+3. Depth-First Search (DFS) with Cycle Detection
+------------------------------------------------
+edge(a,b).
+edge(a,c).
+edge(b,d).
+edge(c,e).
+edge(d,f).
+edge(e,f).
+
+dfs(Goal,Goal,Visited,[Goal|Visited]).
+
+dfs(Start,Goal,Visited,Path) :-
+    edge(Start,Next),
+    \+ member(Next,Visited),
+    dfs(Next,Goal,[Start|Visited],Path).
+
+Query:
+?- dfs(a,f,[],P).
+
+4. Breadth-First Search (BFS)
+-----------------------------
+edge(a,b).
+edge(a,c).
+edge(b,d).
+edge(c,e).
+edge(d,f).
+edge(e,g).
+
+bfs([[Goal|Path]|_],Goal,[Goal|Path]).
+
+bfs([[Node|Path]|Rest],Goal,FinalPath) :-
+    findall([Next,Node|Path],
+            edge(Node,Next),
+            NewPaths),
+    append(Rest,NewPaths,Queue),
+    bfs(Queue,Goal,FinalPath).
+
+Query:
+?- bfs([[a]],g,P).
+
+Note: The PDF also contains headings for other recursive search examples, but the corresponding code is incomplete or not legible in the extracted source.
+
+================================================
+EXPERIMENT 5 — LISTS IN PROLOG
+================================================
+
+1. Finding the First Element
+----------------------------
+first_element([H|_], H).
+
+Query:
+?- first_element([10,20,30], X).
+
+2. Membership Predicate
+-----------------------
+my_member(X, [X|_]).
+
+my_member(X, [_|T]) :-
+    my_member(X, T).
+
+Query:
+?- my_member(3, [1,2,3,4]).
+
+3. Length of a List
+-------------------
+my_length([], 0).
+
+my_length([_|T], N) :-
+    my_length(T, N1),
+    N is N1 + 1.
+
+Query:
+?- my_length([a,b,c,d,e], N).
+
+4. Append Two Lists
+-------------------
+my_append([], L, L).
+
+my_append([H|T], L2, [H|R]) :-
+    my_append(T, L2, R).
+
+Query:
+?- my_append([1,2,3], [4,5,6], X).
+
+5. Sum of Elements
+------------------
+sum_list([], 0).
+
+sum_list([H|T], Sum) :-
+    sum_list(T, S),
+    Sum is H + S.
+
+Query:
+?- sum_list([1,2,3,4], S).
+
+6. Homework Tasks Listed in the PDF
+-----------------------------------
+The PDF asks students to implement these, but does not provide the complete programs:
+- Find the maximum element in a list.
+- Reverse a list using recursion.
+- Remove all occurrences of a given element from a list.
+- Check whether a list is a palindrome.
+
+================================================
+EXPERIMENT 6 — STRING OPERATIONS IN PROLOG
+================================================
+
+1. Convert a String to a List of Characters
+-------------------------------------------
+?- string_chars("hello", List).
+
+2. String Concatenation
+-----------------------
+concatenate(String1, String2, Result) :-
+    string_concat(String1, String2, Result).
+
+Query:
+?- concatenate("Artificial", " Intelligence", Result).
+
+3. String Reversal
+------------------
+reverse_string(String, Reversed) :-
+    string_chars(String, Characters),
+    reverse(Characters, RevCharacters),
+    string_chars(Reversed, RevCharacters).
+
+Query:
+?- reverse_string("prolog", Result).
+
+4. Palindrome Checking
+----------------------
+palindrome(String) :-
+    string_chars(String, Characters),
+    reverse(Characters, Reversed),
+    Characters = Reversed.
+
+Queries:
+?- palindrome("madam").
+?- palindrome("computer").
+
+5. Character Position
+---------------------
+character_position(String, Character, Position) :-
+    string_chars(String, Characters),
+    nth1(Position, Characters, Character).
+
+Query:
+?- character_position("prolog", 'o', Position).
+
+6. Substring Position
+---------------------
+substring_position(String, Substring, Position) :-
+    sub_string(String, Before, _, _, Substring),
+    Position is Before + 1.
+
+Query:
+?- substring_position("artificial intelligence", "intelligence", Position).
+
+7. Substring Extraction
+-----------------------
+extract_substring(String, Start, Length, Substring) :-
+    Before is Start - 1,
+    sub_string(String, Before, Length, _, Substring).
+
+Query:
+?- extract_substring("programming", 4, 5, Result).
+
+8. Additional Demonstration Queries
+-----------------------------------
+?- concatenate("Pro", "log", Result).
+?- reverse_string("artificial", Result).
+?- palindrome("level").
+?- character_position("artificial", 'i', Position).
+?- substring_position("prolog programming prolog", "prolog", Position).
+?- extract_substring("machine learning", 9, 8, Result).
+
+Note: The PDF describes advanced palindrome, longest repeated substring, word frequency, and approximate string matching as challenging tasks, but does not provide complete code for those tasks.
+
+================================================
+EXPERIMENT 7 — SET OPERATIONS IN PROLOG
+================================================
+
+1. Membership Predicate
+-----------------------
+member_of(X, [X|_]).
+
+member_of(X, [_|T]) :-
+    member_of(X, T).
+
+Query:
+?- member_of(3, [1,2,3,4]).
+
+2. Union
+--------
+union([], L, L).
+
+union([H|T], L, R) :-
+    member_of(H, L),
+    union(T, L, R).
+
+union([H|T], L, [H|R]) :-
+    \+ member_of(H, L),
+    union(T, L, R).
+
+Query:
+?- union([1,2,3], [3,4,5], R).
+
+3. Intersection
+---------------
+intersection([], _, []).
+
+intersection([H|T], L, [H|R]) :-
+    member_of(H, L),
+    intersection(T, L, R).
+
+intersection([H|T], L, R) :-
+    \+ member_of(H, L),
+    intersection(T, L, R).
+
+Query:
+?- intersection([1,2,3,4], [3,4,5,6], R).
+
+4. Difference
+-------------
+difference([], _, []).
+
+difference([H|T], L, R) :-
+    member_of(H, L),
+    difference(T, L, R).
+
+difference([H|T], L, [H|R]) :-
+    \+ member_of(H, L),
+    difference(T, L, R).
+
+Query:
+?- difference([1,2,3,4,5], [2,4,6], R).
+
+5. Symmetric Difference
+-----------------------
+symmetric_difference(A, B, R) :-
+    difference(A, B, D1),
+    difference(B, A, D2),
+    union(D1, D2, R).
+
+Query:
+?- symmetric_difference([1,2,3,4], [3,4,5,6], R).
+
+6. Complement
+-------------
+complement(U, A, R) :-
+    difference(U, A, R).
+
+Query:
+?- complement([1,2,3,4,5,6,7], [2,4,6], R).
+
+7. AI Application — Union
+-------------------------
+% Agent knowledge lists:
+% Agent1 = [human,mammal,intelligent].
+% Agent2 = [mammal,animal,living].
+
+?- union([human,mammal,intelligent],
+         [mammal,animal,living],
+         R).
+
+8. AI Application — Pending Actions
+-----------------------------------
+?- difference([irrigation,fertilizer,pesticide,harvesting],
+              [irrigation,pesticide],
+              R).
+
+9. Challenging Task Queries Shown in the PDF
+--------------------------------------------
+% Common and unique knowledge
+?- intersection([ai,machine_learning,python,logic],
+                [machine_learning,deep_learning,python],
+                Common).
+
+?- difference([ai,machine_learning,python,logic],
+              [machine_learning,deep_learning,python],
+              Unique).
+
+% Compare symptoms
+?- intersection([fever,cough,headache,fatigue],
+                [cough,fatigue,sore_throat,body_pain],
+                Common).
+
+?- difference([fever,cough,headache,fatigue],
+              [cough,fatigue,sore_throat,body_pain],
+              Unique).
+
+?- symmetric_difference([fever,cough,headache,fatigue],
+                        [cough,fatigue,sore_throat,body_pain],
+                        Different).
+
+% Compare model features
+?- intersection([age,income,education,experience,location],
+                [income,education,credit_score,location],
+                Common).
+
+?- difference([age,income,education,experience,location],
+              [income,education,credit_score,location],
+              OnlyModel1).
+
+?- difference([income,education,credit_score,location],
+              [age,income,education,experience,location],
+              OnlyModel2).
+
+% Crop recommendation / complement
+?- complement([cotton,rice,maize,wheat,sugarcane,groundnut],
+              [rice,maize,groundnut],
+              NotSuitable).
