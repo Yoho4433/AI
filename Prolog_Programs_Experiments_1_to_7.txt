@@ -1,663 +1,1712 @@
-PROLOG PROGRAMS EXTRACTED FROM EXPERIMENTS 1–7
-================================================
-Source PDFs: Experiments 1, 2, 3, 4, 5, 6 and 7.
-This file groups the Prolog facts, rules, complete program examples, and sample queries under their titles.
-Queries are included where shown in the PDFs. Some PDF examples show only a partial rule or task description; these are not silently completed unless the source provides the code.
-
-================================================
-EXPERIMENT 1 — INTRODUCTION TO PROLOG AND FACTS, OBJECTS, PREDICATES, VARIABLES
-================================================
-
-1. Basic Fact Examples
-----------------------
+EXPERIMENT 1
+==============
+Example Program
+student(ram).
+student(sita).
+course(ram,maths).
+course(sita,physics).
 likes(ram,mango).
-
-parent(john,mary).
-
-2. Multiple Facts
------------------
-likes(ram,mango).
-likes(ram,apple).
-likes(ram,orange).
-
-Query:
-?- likes(ram,X).
-
-3. Example Knowledge Base
--------------------------
+likes(sita,apple).
+Example Program: Knowledge Base (1)
 % Students
 student(ram).
 student(sita).
 student(arun).
-
 % Courses
 course(ram, mathematics).
 course(sita, physics).
 course(arun, mathematics).
-
 % Departments
 department(ram, cse).
 department(sita, ece).
 department(arun, cse).
+Example Program: Knowledge Base (2)
+Additional Facts
+% Favorite Fruits
+likes(ram, mango).
+likes(ram, apple).
+likes(sita, orange).
+likes(arun, mango).
 
-% Likes
-likes(ram,mango).
-likes(sita,apple).
-
-4. Queries for the Knowledge Base
----------------------------------
-?- student(ram).
-?- student(ravi).
-?- student(X).
-?- course(X, mathematics).
-?- likes(ram, X).
-?- course(Student, Course).
-?- student(X), department(X,cse).
-
-5. Loading the Program
-----------------------
-?- consult('experiment1.pl').
-% Alternatively:
-?- ['experiment1.pl'].
-
-================================================
-EXPERIMENT 2 — RULES AND UNIFICATION IN PROLOG
-================================================
-
-1. Facts and a Grandparent Rule
--------------------------------
+EXPERIMENT 2
+==============
+Example of a Rule
+Knowledge Base:
 parent(john,mary).
 parent(mary,david).
-
-grandparent(X,Y) :-
-    parent(X,Z),
-    parent(Z,Y).
-
+grandparent(X,Y):-
+parent(X,Z),
+parent(Z,Y).
 Query:
 ?- grandparent(john,david).
-
-2. Simple Rule
---------------
-student(X) :-
-    person(X).
-
-3. Eligibility Rule
--------------------
-eligible(X) :-
-    student(X),
-    age(X,A),
-    A >= 18.
-
-4. Recursive Ancestor Rule
---------------------------
-ancestor(X,Y) :-
-    parent(X,Y).
-
-ancestor(X,Y) :-
-    parent(X,Z),
-    ancestor(Z,Y).
-
-5. Facts for Likes and Query
-----------------------------
+Output:
+true.
+Artificial Intelligence Laboratory
+Working of the Rule
+Query: grandparent(john, david)
+Rule: grandparent(X, Y ) : −parent(X, Z), parent(Z, Y )
+Unification:
+X = john,
+Y = david
+Sub-goals:
+parent(john, Z)
+and
+parent(Z, david)
+Solution:
+Z = mary
+Hence,
+john →mary →david
+Artificial Intelligence Laboratory
+Types of Rules
+1. Simple Rule
+student(X):-person(X).
+2. Compound Rule
+eligible(X):-
+student(X),
+age(X,A),
+A>=18.
+3. Recursive Rule
+ancestor(X,Y):-parent(X,Y).
+ancestor(X,Y):-
+parent(X,Z),
+ancestor(Z,Y).
+Artificial Intelligence Laboratory
+Example of Variables
+Knowledge Base:
 likes(ravi, mathematics).
 likes(ravi, physics).
-
 Query:
 ?- likes(ravi,X).
-
-6. Unification Queries
-----------------------
-?- X = john.
-?- john = john.
-?- john = mary.
-?- father(X,john) = father(mark,john).
-
-7. Grandparent Example
-----------------------
+Execution:
+X = mathematics
+and
+X = physics
+Output:
+X = mathematics ;
+X = physics.
+Artificial Intelligence Laboratory
+Unification in Prolog
+Definition
+Unification is the process of matching two terms by finding suitable substitutions for variables
+so that both terms become identical.
+Unification is used for:
+Matching queries with facts.
+Matching goals with rule heads.
+Assigning values to variables.
+Logical inference.
+Artificial Intelligence Laboratory
+Rules and Unification Together
+Program:
 parent(ann,bob).
 parent(bob,charles).
-
-grandparent(X,Y) :-
-    parent(X,Z),
-    parent(Z,Y).
-
+grandparent(X,Y):-
+parent(X,Z),
+parent(Z,Y).
 Query:
 ?- grandparent(ann,charles).
+Artificial Intelligence Laboratory
+Execution Process
+Initial Goal:
+grandparent(ann, charles)
+Rule matching:
+grandparent(X, Y )
+Substitution:
+X = ann,
+Y = charles
+New goals:
+parent(ann, Z)
+parent(Z, charles)
+Artificial Intelligence Laboratory
 
-8. University Course Recommendation — Source Facts
---------------------------------------------------
-completed(raja,python).
-completed(raja,math).
-
-% Query shown in the PDF:
-?- eligible(raja,ai).
-
-Note: The PDF shows the facts and query for this task, but does not show the complete eligible/3 rule.
-
-9. Ancestor Query
------------------
-?- ancestor(john,X).
-
-================================================
-EXPERIMENT 3 — SIMPLE ARITHMETIC OPERATIONS, SIMPLE INPUT/OUTPUT AND COMPOUND GOALS
-================================================
-
-1. Arithmetic Evaluation
-------------------------
-?- X is 10+5.
-
-2. Difference Between = and is
-------------------------------
-?- X = 10+5.
-?- X is 10+5.
-
-3. Arithmetic Operator Examples
--------------------------------
-X is 5+3.
-X is 8-2.
-X is 4*5.
-X is 9/2.
-X is 9//2.
-X is 9 mod 2.
-X is 2**3.
-
-4. Arithmetic Operations on Two Numbers
----------------------------------------
-calculate(A,B) :-
-    Sum is A+B,
-    Diff is A-B,
-    Mul is A*B,
-    Div is A/B,
-    write('Addition = '), write(Sum), nl,
-    write('Subtraction = '), write(Diff), nl,
-    write('Multiplication = '), write(Mul), nl,
-    write('Division = '), write(Div).
-
-Query:
+EXPERIMENT 3
+==============
+Program 1: Arithmetic Operations
+1
+calculate(A,B):-
+2
+Sum is A+B,
+3
+Diff is A-B,
+4
+Mul is A*B,
+5
+Div is A/B,
+6
+write('Addition = '),write(Sum),nl,
+7
+write('Subtraction = '),write(Diff),nl,
+8
+write('Multiplication = '),write(Mul),nl,
+9
+write('Division = '),write(Div).
+Artificial Intelligence Laboratory
+Execution
+Query
+1
 ?- calculate(20,5).
-
-5. Maximum of Two Numbers
--------------------------
-maximum(A,B) :-
-    A > B,
-    write(A).
-
-maximum(A,B) :-
-    B >= A,
-    write(B).
-
-Query:
+Output
+1
+Addition = 25
+2
+Subtraction = 15
+3
+Multiplication = 100
+4
+Division = 4
+Artificial Intelligence Laboratory
+Comparison Operators
+Operator
+Meaning
+=:=
+Arithmetic equality
+=\=
+Arithmetic inequality
+==
+Term identity
+\==
+Terms are different
+>
+Greater than
+<
+Less than
+>=
+Greater than or equal
+=<
+Less than or equal
+Artificial Intelligence Laboratory
+Program 2: Maximum of Two Numbers
+1
+maximum(A,B):-
+2
+A>B,
+3
+write(A).
+4
+5
+maximum(A,B):-
+6
+B>=A,
+7
+write(B).
+Query
+1
 ?- maximum(15,20).
-
-6. Addition Using User Input
-----------------------------
-addition :-
-    write('Enter first number: '),
-    read(A),
-    write('Enter second number: '),
-    read(B),
-    Sum is A+B,
-    write('Sum = '),
-    write(Sum).
-
-Query:
-?- addition.
-
-7. Area of a Circle
--------------------
-area_circle :-
-    write('Enter radius: '),
-    read(R),
-    Area is 3.14159*R*R,
-    write('Area = '),
-    write(Area).
-
-8. Simple Interest
-------------------
-simple_interest :-
-    write('Principal: '),
-    read(P),
-    write('Rate: '),
-    read(R),
-    write('Time: '),
-    read(T),
-    SI is (P*R*T)/100,
-    write('Simple Interest = '),
-    write(SI).
-
-9. Conjunction (AND)
---------------------
+Output
+1
+20
+Artificial Intelligence Laboratory
+Input and Output Predicates
+Predicate
+Purpose
+read(X)
+Reads input
+write(X)
+Displays output
+nl
+New line
+tab(N)
+Inserts N spaces
+Artificial Intelligence Laboratory
+Program 3: Addition Using Input
+1
+addition:-
+2
+write('Enter first number: '),
+3
+read(A),
+4
+write('Enter second number: '),
+5
+read(B),
+6
+Sum is A+B,
+7
+write('Sum = '),
+8
+write(Sum).
+Artificial Intelligence Laboratory
+?-addition.
+Enter
+the first number:
+0
+•
+enter
+Entes
+second
+number:
+5.
+why
+Quay:
+Program 4: Area of a Circle
+1
+area_circle:-
+2
+write('Enter radius: '),
+3
+read(R),
+4
+Area is 3.14159*R*R,
+5
+write('Area = '),
+6
+write(Area).
+Area = πr2
+Artificial Intelligence Laboratory
+Program 5: Simple Interest
+SI = PRT
+100
+1
+simple_interest:-
+2
+write('Principal: '),
+3
+read(P),
+4
+write('Rate: '),
+5
+read(R),
+6
+write('Time: '),
+7
+read(T),
+8
+SI is (P*R*T)/100,
+9
+write('Simple Interest = '),
+0
+write(SI).
+Artificial Intelligence Laboratory
+Compound Goals
+A compound goal consists of multiple goals connected together.
+Types:
+1 Conjunction (,)
+2 Disjunction (;)
+3 Negation (\+)
+Artificial Intelligence Laboratory
+Conjunction (AND)
+All goals must succeed.
+1
 student(john).
+2
 student(mary).
-
+3
+4
 hosteller(john).
+5
 hosteller(mary).
-
-eligible(X) :-
-    student(X),
-    hosteller(X).
-
-Query:
+6
+7
+eligible(X):-
+8
+student(X),
+9
+hosteller(X).
+Query
+1
 ?- eligible(john).
-
-10. Square and Cube
--------------------
-square_cube(N) :-
-    Square is N*N,
-    Cube is N*N*N,
-    write('Square = '),
-    write(Square), nl,
-    write('Cube = '),
-    write(Cube).
-
-11. Disjunction / Multiple Goals
---------------------------------
-grade(pass) :-
-    write('Passed').
-
-grade(fail) :-
-    write('Failed').
-
-Query:
-?- grade(pass); grade(fail).
-
-12. Negation
-------------
+Output
+1
+true.
+Artificial Intelligence Laboratory
+Student (Gokul).
+Program 6: Square and Cube
+1
+square_cube(N):-
+2
+Square is N*N,
+3
+Cube is N*N*N,
+4
+write('Square = '),
+5
+write(Square),nl,
+6
+write('Cube = '),
+7
+write(Cube).
+Here every goal is connected using commas, therefore all goals must succeed.
+Artificial Intelligence Laboratory
+Disjunction (OR)
+At least one goal should succeed.
+1
+grade(pass):-
+2
+write('Passed').
+3
+4
+grade(fail):-
+5
+write('Failed').
+Query
+1
+?- grade(pass);grade(fail).
+Output
+1
+Passed ;
+2
+Failed.
+Artificial Intelligence Laboratory
+Negation
+Syntax
+\+ Goal
+1
 student(ram).
-
-not_student(X) :-
-    \+ student(X).
-
-Query:
+2
+3
+not_student(X):-
+4
+\+ student(X).
+Query
+1
 ?- not_student(raja).
-
-13. Even or Odd
----------------
-even_odd :-
-    write('Enter Number: '),
-    read(N),
-    R is N mod 2,
-    (
-        R =:= 0 ->
-        write('Even')
-        ;
-        write('Odd')
-    ).
-
-14. Student Database and Passing Rule
--------------------------------------
+Output
+1
+true.
+Artificial Intelligence Laboratory
+If
+✗ is not student,
+then
+Not_student (x)
+?- not_student (raja)
+It student (x)
+Program 7: Voting Eligibility
+1
+vote:-
+2
+write('Enter Age: '),
+3
+read(Age),
+4
+Age>=18,
+5
+write('Eligible to Vote').
+6
+7
+vote:-
+8
+write('Not Eligible to Vote').
+Artificial Intelligence Laboratory
+Program 8: Even or Odd
+1
+even_odd:-
+2
+write('Enter Number: '),
+3
+read(N),
+4
+R is N mod 2,
+5
+(
+6
+R =:= 0 ->
+7
+write('Even')
+8
+;
+9
+write('Odd')
+0
+).
+Artificial Intelligence Laboratory
+Program 9: Student Database
+1
 student(rahul).
+2
 student(priya).
-
-marks(rahul,85).
-marks(priya,72).
-
-passed(X) :-
-    student(X),
-    marks(X,M),
-    M >= 50.
-
-Query:
+3
+4
+marks(rahul ,85).
+5
+marks(priya ,72).
+6
+7
+passed(X):-
+8
+student(X),
+9
+marks(X,M),
+0
+M>=50.
+Query
+1
 ?- passed(rahul).
+Output
+1
+true.
+Artificial Intelligence Laboratory
 
-15. Voting Program (as shown in the PDF)
-----------------------------------------
-vote :-
-    write('Enter Age: '),
-    read(Age),
-    write('Eligible to Vote').
-
-vote :-
-    write('Not Eligible to Vote').
-
-================================================
-EXPERIMENT 4 — RECURSION IN PROLOG
-================================================
-
-1. Recursive Ancestor Relationship
------------------------------------
+EXPERIMENT 4
+==============
+Experiment 4.1: Recursive Ancestor Relationship
+Knowledge Base
 parent(john,mary).
 parent(mary,alice).
 parent(alice,bob).
 parent(bob,tom).
-
-ancestor(X,Y) :-
-    parent(X,Y).
-
-ancestor(X,Y) :-
-    parent(X,Z),
-    ancestor(Z,Y).
-
-Query:
+Recursive Rule
+ancestor(X,Y):-
+parent(X,Y).
+ancestor(X,Y):-
+parent(X,Z),
+ancestor(Z,Y).
+Query
 ?- ancestor(john,tom).
-
-2. Tower of Hanoi
------------------
-hanoi(1,S,D,_) :-
-    write('Move disk from '),
-    write(S),
-    write(' to '),
-    write(D), nl.
-
-hanoi(N,S,D,A) :-
-    N > 1,
-    M is N-1,
-    hanoi(M,S,A,D),
-    hanoi(1,S,D,A),
-    hanoi(M,A,D,S).
-
-Query:
-?- hanoi(3,left,right,middle).
-
-3. Depth-First Search (DFS) with Cycle Detection
-------------------------------------------------
+true.
+Artificial Intelligence Laboratory
+Experiment 4.2: Recursive Path Finding
+Knowledge Base
 edge(a,b).
 edge(a,c).
 edge(b,d).
 edge(c,e).
 edge(d,f).
 edge(e,f).
+edge(f,g).
+Recursive Program
+path(X,Y):-
+edge(X,Y).
+path(X,Y):-
+edge(X,Z),
+path(Z,Y).
+Query
+?- path(a,g).
+true.
+Artificial Intelligence Laboratory
+a.
+b
+o
+c
+d
+o
+e
+f
+g
+X
+Z
+y
+✓
+.
+Path (a, g):-
+edge (a, b), salt (b, d),
+eld, f), path (f, 9)
+G
+patt(d. f):-
+edge (d. f)
+Experiment 4.3: Recursive Maze Solver
+move(a,b).
+move(b,c).
+move(c,d).
+move(c,e).
+move(e,f).
+move(f,g).
+solve(X,Y):-
+move(X,Y).
+solve(X,Y):-
+move(X,Z),
+solve(Z,Y).
+Query
+?- solve(a,g).
+true.
+Artificial Intelligence Laboratory
+Experiment 4.4: Tower of Hanoi
+hanoi(1,S,D,_):-
+write('Move disk from '),
+write(S),
+write(' to '),
+write(D), nl.
+hanoi(N,S,D,A):-
+N>1,
+M is N-1,
+hanoi(M,S,A,D),
+hanoi(1,S,D,A),
+hanoi(M,A,D,S).
+Query
+?- hanoi(3,left,right,middle).
+Artificial Intelligence Laboratory
+S
+J
+No"milly
+N=/
+✓
+N=4
+S
+D
+A
+N-1
+Ny
+S
+A
+N-I
+J
+A
+D
+S
+Observations
+Students should observe
+Recursive calls continue until the base case is reached.
+Backtracking explores alternative solutions automatically.
+Recursive predicates simplify graph traversal.
+AI reasoning can be naturally represented using recursion.
+Many state-space search algorithms rely on recursive exploration.
+Artificial Intelligence Laboratory
+1
+D
+S
+A
+M= N-1
+Viva Questions
+1 What is recursion?
+2 Explain the difference between recursion and iteration.
+3 What is the purpose of a base case?
+4 Explain recursive predicates.
+5 What is backtracking in Prolog?
+6 Mention AI applications of recursion.
+7 Explain state-space search.
+8 How is recursion useful in graph traversal?
+9 Differentiate recursion and looping.
+10 Explain recursive reasoning.
+Artificial Intelligence Laboratory
 
-dfs(Goal,Goal,Visited,[Goal|Visited]).
-
-dfs(Start,Goal,Visited,Path) :-
-    edge(Start,Next),
-    \+ member(Next,Visited),
-    dfs(Next,Goal,[Start|Visited],Path).
-
-Query:
-?- dfs(a,f,[],P).
-
-4. Breadth-First Search (BFS)
------------------------------
-edge(a,b).
-edge(a,c).
-edge(b,d).
-edge(c,e).
-edge(d,f).
-edge(e,g).
-
-bfs([[Goal|Path]|_],Goal,[Goal|Path]).
-
-bfs([[Node|Path]|Rest],Goal,FinalPath) :-
-    findall([Next,Node|Path],
-            edge(Node,Next),
-            NewPaths),
-    append(Rest,NewPaths,Queue),
-    bfs(Queue,Goal,FinalPath).
-
-Query:
-?- bfs([[a]],g,P).
-
-Note: The PDF also contains headings for other recursive search examples, but the corresponding code is incomplete or not legible in the extracted source.
-
-================================================
-EXPERIMENT 5 — LISTS IN PROLOG
-================================================
-
-1. Finding the First Element
-----------------------------
+EXPERIMENT 5
+==============
+Example 1: Finding the First Element
+The first element may represent the next state selected for processing.
+Program
 first_element([H|_], H).
-
-Query:
+Example query:
 ?- first_element([10,20,30], X).
-
-2. Membership Predicate
------------------------
+Output:
+X = 10.
+Here:
+H = 10
+and
+indicates that the remaining elements are not required.
+PAMDS601–Artificial Intelligence Laboratory
+CHIT]
+(H1-]
+✓
+'Resut
+Example 2: Membership of an Element
+In AI search, membership testing can be used to check whether a state is already present in a
+collection.
+The following program checks whether an element belongs to a list.
+Program
 my_member(X, [X|_]).
-
 my_member(X, [_|T]) :-
-    my_member(X, T).
-
-Query:
+my_member(X, T).
+Example query:
 ?- my_member(3, [1,2,3,4]).
-
-3. Length of a List
--------------------
+Output:
+true.
+PAMDS601–Artificial Intelligence Laboratory
+✗ [1%2, 314]
+base:
+Reame:
+my_mbr (3, [11 -1)
+my mbr (3, [-12, 3,4):-
+my mbr (3,
+)
+my mk (3, [21-1)
+mym 13/[-13,43)
+[2, 3,4]
+341
+3 ≠ 2
+3=2/
+How Membership Works
+Consider:
+my_member(3,[1,2,3,4])
+Prolog checks the list recursively:
+3 ̸= 1
+3 ̸= 2
+3 = 3
+Therefore,
+true
+The list is processed one element at a time until:
+the required element is found, or
+the empty list is reached.
+PAMDS601–Artificial Intelligence Laboratory
+Example 3: Finding the Length of a List
+In AI, the length of a list may represent the number of generated states, actions, or candidate
+solutions.
+Program
 my_length([], 0).
-
 my_length([_|T], N) :-
-    my_length(T, N1),
-    N is N1 + 1.
-
-Query:
+my_length(T, N1),
+N is N1 + 1.
+Example query:
 ?- my_length([a,b,c,d,e], N).
-
-4. Append Two Lists
--------------------
+Output:
+N = 5.
+PAMDS601–Artificial Intelligence Laboratory
+(a,s, c, d, e]
+→ N
+= N, +1=4+1 = 5
+H
+↓ T
+[b, c, d, e]
+→
+N, = Natl = 3+1=4
+H
+/
+[c.de)
+→ Nz = Nz +1
+= 2+1
+= 3
+Nz = Natl = 1+1=2
+N4 = Ns +1
+= 0 + 1 = 1
+↓[0]
+→ 0
+N5 = 0
+HI
+N-N, + I
+y
+[die]
+[ 'le]
+Working of Length Calculation
+For the list:
+[a, b, c, d]
+the recursive calls are:
+[a, b, c, d] →[b, c, d] →[c, d] →[d] →[]
+At the empty list:
+my_length([],0)
+Then the values are calculated while returning:
+0 →1 →2 →3 →4
+Therefore:
+N = 4
+PAMDS601–Artificial Intelligence Laboratory
+H
+173
+l
+2
+3
+4
+→ [-1b, c. d) - [ 179]
+0
+1+2
+- [Id) -G
+L = [HH]
+[HIT]
+[HIT]
+[]
+Example 4: Concatenating Two Lists
+In AI search, newly generated states may be combined with an existing collection of states.
+The following program combines two lists.
+Program
 my_append([], L, L).
-
 my_append([H|T], L2, [H|R]) :-
-    my_append(T, L2, R).
-
-Query:
+my_append(T, L2, R).
+Example query:
 ?- my_append([1,2,3], [4,5,6], X).
-
-5. Sum of Elements
-------------------
+Output:
+X = [1,2,3,4,5,6].
+PAMDS601–Artificial Intelligence Laboratory
+- ✓
+my_append ([1,23, [3,4],
+It = 1 "T = [2]
+R = [I/R,] = ['½???,
+my_appad ([27, [3,4], R,)
+4=2
+I =L]
+my_appel ([7, [3,43, R2) " "4)
+R2 = [3,4]
+R
+Fst
+↗" 334]
+Working of List Concatenation
+Consider:
+[1, 2, 3]
+and
+[4, 5]
+The recursive process is:
+[1, 2, 3] →[1|R1]
+[2, 3] →[2|R2]
+[3] →[3|R3]
+[] →[4, 5]
+Therefore:
+[1, 2, 3, 4, 5]
+The first list is recursively traversed until the empty list is reached.
+PAMDS601–Artificial Intelligence Laboratory
+Example 5: Sum of Elements
+The following program calculates the sum of all elements in a list.
+Program
 sum_list([], 0).
-
 sum_list([H|T], Sum) :-
-    sum_list(T, S),
-    Sum is H + S.
-
-Query:
+sum_list(T, S),
+Sum is H + S.
+Example query:
 ?- sum_list([1,2,3,4], S).
+Output:
+S = 10.
+PAMDS601–Artificial Intelligence Laboratory
+= 9
+=
+1 + 9
+[3143=1 +4
+[41] ¾
+↑
+[] → 54
+→ 0.
+= 10
+Working of Sum Calculation
+For:
+[1, 2, 3, 4]
+we obtain:
+Sum([1, 2, 3, 4]) = 1 + Sum([2, 3, 4])
+= 1 + 2 + Sum([3, 4])
+= 1 + 2 + 3 + Sum([4])
+= 1 + 2 + 3 + 4 + Sum([])
+= 10
+Therefore:
+S = 10
+PAMDS601–Artificial Intelligence Laboratory
+Important Concepts Used
+The implementation of lists in Prolog mainly uses:
+1 Unification
+Variables are matched with values or structures.
+2 Pattern Matching
+Lists are divided into Head and Tail using:
+[H|T]
+3 Recursion
+The same predicate is repeatedly applied to the Tail.
+4 Base Case
+The recursion terminates when the empty list is reached:
+[]
+PAMDS601–Artificial Intelligence Laboratory
+Summary: Lists in AI and Prolog
+Lists provide a simple mechanism to represent collections in AI.
+AI Application
+Prolog List Operation
+Search states
+Membership / Append
+Open and Closed lists
+Insert / Remove
+Generated nodes
+Length
+Solution path
+List traversal
+Sequence of actions
+Ordered list
+Knowledge and facts
+Membership / Processing
+A Prolog list is generally processed as:
+[H|T]
+Process Head −→Process Tail Recursively −→[]
+PAMDS601–Artificial Intelligence Laboratory
 
-6. Homework Tasks Listed in the PDF
------------------------------------
-The PDF asks students to implement these, but does not provide the complete programs:
-- Find the maximum element in a list.
-- Reverse a list using recursion.
-- Remove all occurrences of a given element from a list.
-- Check whether a list is a palindrome.
-
-================================================
-EXPERIMENT 6 — STRING OPERATIONS IN PROLOG
-================================================
-
-1. Convert a String to a List of Characters
--------------------------------------------
-?- string_chars("hello", List).
-
-2. String Concatenation
------------------------
+EXPERIMENT 6
+==============
+Operation 1: String Concatenation
+Concatenation means joining two strings.
+1
 concatenate(String1, String2, Result) :-
-    string_concat(String1, String2, Result).
-
-Query:
-?- concatenate("Artificial", " Intelligence", Result).
-
-3. String Reversal
-------------------
+2
+string_concat(String1, String2, Result).
+Example:
+1
+?- concatenate("Artificial",
+2
+" Intelligence",
+3
+Result).
+Output:
+1
+Result = "Artificial Intelligence".
+PAMDS601–Artificial Intelligence Laboratory
+Operation 2: String Reversal
+String reversal changes the order of characters.
+1
 reverse_string(String, Reversed) :-
-    string_chars(String, Characters),
-    reverse(Characters, RevCharacters),
-    string_chars(Reversed, RevCharacters).
-
-Query:
+2
+string_chars(String, Characters),
+3
+reverse(Characters, RevCharacters),
+4
+string_chars(Reversed, RevCharacters).
+Example:
+1
 ?- reverse_string("prolog", Result).
-
-4. Palindrome Checking
-----------------------
+Output:
+1
+Result = "golorp".
+PAMDS601–Artificial Intelligence Laboratory
+Operation 3: Palindrome Checking
+A palindrome reads the same in both directions.
+Examples:
+madam
+level
+radar
+Program:
+1
 palindrome(String) :-
-    string_chars(String, Characters),
-    reverse(Characters, Reversed),
-    Characters = Reversed.
-
-Queries:
+2
+string_chars(String, Characters),
+3
+reverse(Characters, Reversed),
+4
+Characters = Reversed.
+PAMDS601–Artificial Intelligence Laboratory
+Palindrome Examples
+Example 1:
+1
 ?- palindrome("madam").
+Output:
+1
+true.
+Example 2:
+1
 ?- palindrome("computer").
-
-5. Character Position
----------------------
+Output:
+1
+false.
+PAMDS601–Artificial Intelligence Laboratory
+Operation 4: Character Position
+The predicate nth1/3 finds the position of a character.
+1
 character_position(String, Character, Position) :-
-    string_chars(String, Characters),
-    nth1(Position, Characters, Character).
-
-Query:
+2
+string_chars(String, Characters),
+3
+nth1(Position, Characters, Character).
+Example:
+1
 ?- character_position("prolog", 'o', Position).
-
-6. Substring Position
----------------------
+Output:
+1
+Position = 3 ;
+2
+Position = 5.
+Positions start from 1.
+PAMDS601–Artificial Intelligence Laboratory
+Operation 5: Substring Position
+A substring is a sequence of characters occurring within another string.
+Program:
+1
 substring_position(String, Substring, Position) :-
-    sub_string(String, Before, _, _, Substring),
-    Position is Before + 1.
-
+2
+sub_string(String, Before, _, _, Substring),
+3
+Position is Before + 1.
+PAMDS601–Artificial Intelligence Laboratory
+IN TELL IGENCE"
+position Her
+1234567- - .
+↑
+Befret)
+Substring Position Example
 Query:
-?- substring_position("artificial intelligence", "intelligence", Position).
-
-7. Substring Extraction
------------------------
+1
+?- substring_position(
+2
+"artificial intelligence",
+3
+"intelligence",
+4
+Position).
+Output:
+1
+Position = 12.
+PAMDS601–Artificial Intelligence Laboratory
+Before = 11
+Operation 6: Substring Extraction
+The predicate sub_string/5 can be used to extract a substring.
+1
 extract_substring(String, Start, Length, Substring) :-
-    Before is Start - 1,
-    sub_string(String, Before, Length, _, Substring).
-
+2
+Before is Start - 1,
+3
+sub_string(String,
+4
+Before,
+5
+Length,
+6
+_,
+7
+Substring).
+PAMDS601–Artificial Intelligence Laboratory
+4
+5
+extract-subity ( "INTELLIGENCE ¥14, Result)
+Result
+INT.EE!IGEN"cÉ
+3
+1 23 45
+NCE Nul
+Substring Extraction Example
 Query:
-?- extract_substring("programming", 4, 5, Result).
-
-8. Additional Demonstration Queries
------------------------------------
+1
+?- extract_substring(
+2
+"programming",
+3
+4,
+4
+5,
+5
+Result).
+Output:
+1
+Result = "gramm".
+PAMDS601–Artificial Intelligence Laboratory
+12345
+Complete Prolog Program: Part 1
+1
+% String concatenation
+2
+concatenate(String1, String2, Result) :-
+3
+string_concat(String1, String2, Result).
+4
+5
+% String reversal
+6
+reverse_string(String, Reversed) :-
+7
+string_chars(String, Characters),
+8
+reverse(Characters, RevCharacters),
+9
+string_chars(Reversed, RevCharacters).
+0
+1
+% Palindrome checking
+2
+palindrome(String) :-
+3
+string_chars(String, Characters),
+4
+reverse(Characters, Reversed),
+5
+Characters = Reversed.
+PAMDS601–Artificial Intelligence Laboratory
+Complete Prolog Program: Part 2
+1
+% Character position
+2
+character_position(String, Character, Position) :-
+3
+string_chars(String, Characters),
+4
+nth1(Position, Characters, Character).
+5
+6
+% Substring position
+7
+substring_position(String, Substring, Position) :-
+8
+sub_string(String, Before, _, _, Substring),
+9
+Position is Before + 1.
+0
+1
+% Substring extraction
+2
+extract_substring(String, Start, Length, Substring) :-
+3
+Before is Start - 1,
+4
+sub_string(String, Before, Length, _, Substring).
+PAMDS601–Artificial Intelligence Laboratory
+Examples to be Demonstrated
+Example 1: Concatenation
+1
 ?- concatenate("Pro", "log", Result).
+Example 2: Reversal
+1
 ?- reverse_string("artificial", Result).
+Example 3: Palindrome
+1
 ?- palindrome("level").
+Example 4: Character position
+1
 ?- character_position("artificial", 'i', Position).
-?- substring_position("prolog programming prolog", "prolog", Position).
-?- extract_substring("machine learning", 9, 8, Result).
+PAMDS601–Artificial Intelligence Laboratory
 
-Note: The PDF describes advanced palindrome, longest repeated substring, word frequency, and approximate string matching as challenging tasks, but does not provide complete code for those tasks.
-
-================================================
-EXPERIMENT 7 — SET OPERATIONS IN PROLOG
-================================================
-
-1. Membership Predicate
------------------------
+EXPERIMENT 7
+==============
+Membership Predicate
+This predicate checks whether an element belongs to a list.
 member_of(X, [X|_]).
-
 member_of(X, [_|T]) :-
-    member_of(X, T).
-
-Query:
+member_of(X, T).
+Example:
 ?- member_of(3, [1,2,3,4]).
-
-2. Union
---------
+true.
+PAMDS601–Artificial Intelligence Laboratory
+Union
+The union contains all elements from both sets.
+A ∪B
 union([], L, L).
-
 union([H|T], L, R) :-
-    member_of(H, L),
-    union(T, L, R).
-
+member_of(H, L),
+union(T, L, R).
 union([H|T], L, [H|R]) :-
-    \+ member_of(H, L),
-    union(T, L, R).
-
-Query:
++ member_of(H, L),
+union(T, L, R).
+PAMDS601–Artificial Intelligence Laboratory
+{• / NEA
+a REB}
+A. {
+13-{2,3}
+AUB = B
+✓
+#=
+B:[1, 4,6]
+unm ([2,37, [114,6], R)
+412131,441k
+=
+1,2, 3
+unin
+✓
+7
+u
+A = {1, 2, 3}
+B- {4,5, 6}
+AN B =
+N/ NEA
+and
+NEB
+Union Example
 ?- union([1,2,3], [3,4,5], R).
-
-3. Intersection
----------------
+Output:
+R = [1,2,3,4,5].
+PAMDS601–Artificial Intelligence Laboratory
+HI
+A- = (1,2, 33,
+BL:[3,415]
+]
+[213]
+[113,415]
+[31
+([ , [1,213,453)
+11 2,3
+AI Application of Union
+Suppose two AI agents contain:
+Agent1 = [human,mammal,intelligent].
+Agent2 = [mammal,animal,living].
+Combine their knowledge:
+?- union(
+[human,mammal,intelligent],
+[mammal,animal,living],
+R).
+PAMDS601–Artificial Intelligence Laboratory
+Intersection
+Intersection contains elements common to both sets.
+A ∩B
 intersection([], _, []).
-
 intersection([H|T], L, [H|R]) :-
-    member_of(H, L),
-    intersection(T, L, R).
-
+member_of(H, L),
+intersection(T, L, R).
 intersection([H|T], L, R) :-
-    \+ member_of(H, L),
-    intersection(T, L, R).
-
-Query:
-?- intersection([1,2,3,4], [3,4,5,6], R).
-
-4. Difference
--------------
++ member_of(H, L),
+intersection(T, L, R).
+PAMDS601–Artificial Intelligence Laboratory
+s
+=
+a /✗ EA
+and NEB}
+Intersection Example
+?- intersection(
+[1,2,3,4],
+[3,4,5,6],
+R).
+Output:
+R = [3,4].
+PAMDS601–Artificial Intelligence Laboratory
+Difference
+Difference contains elements present in the first set but not in the second set.
+A −B
 difference([], _, []).
-
 difference([H|T], L, R) :-
-    member_of(H, L),
-    difference(T, L, R).
-
+member_of(H, L),
+difference(T, L, R).
 difference([H|T], L, [H|R]) :-
-    \+ member_of(H, L),
-    difference(T, L, R).
-
-Query:
-?- difference([1,2,3,4,5], [2,4,6], R).
-
-5. Symmetric Difference
------------------------
++ member_of(H, L),
+difference(T, L, R).
+PAMDS601–Artificial Intelligence Laboratory
+=
+AMB'
+= {N/ NEA and ✗ ∉B} A-B = AM Be
+A
+B
+t
+B
+B- A
+Difference Example
+?- difference(
+[1,2,3,4,5],
+[2,4,6],
+R).
+Output:
+R = [1,3,5].
+PAMDS601–Artificial Intelligence Laboratory
+AI Application of Difference
+Recommended actions:
+[irrigation,fertilizer,pesticide,harvesting]
+Completed actions:
+[irrigation,pesticide]
+Find pending actions:
+?- difference(
+[irrigation,fertilizer,pesticide,harvesting],
+[irrigation,pesticide],
+R).
+PAMDS601–Artificial Intelligence Laboratory
+Symmetric Difference
+The symmetric difference contains elements belonging to only one set.
+A△B = (A −B) ∪(B −A)
 symmetric_difference(A, B, R) :-
-    difference(A, B, D1),
-    difference(B, A, D2),
-    union(D1, D2, R).
+difference(A, B, D1),
+difference(B, A, D2),
+union(D1, D2, R).
+PAMDS601–Artificial Intelligence Laboratory
+A-B
+B- A
+Symmetric Difference Example
+?- symmetric_difference(
+[1,2,3,4],
+[3,4,5,6],
+R).
+Output:
+R = [1,2,5,6].
+PAMDS601–Artificial Intelligence Laboratory
 
+EXPERIMENT 8
+==============
+Missionaries and Cannibals – PROLOG
+initial(state(3,3,0,0,left)).
+goal(state(0,0,3,3,right)).
+move(2,0).
+move(0,2).
+move(1,1).
+move(1,0).
+move(0,1).
+safe(M,C,M1,C1) :-
+M >= 0, C >= 0,
+M1 >= 0, C1 >= 0,
+(M =:= 0 ; M >= C),
+(M1 =:= 0 ; M1 >= C1).
+cross(state(M,C,M1,C1,left),
+state(M2,C2,M3,C3,right)) :-
+move(X,Y),
+M2 is M-X,
+C2 is C-Y,
+M3 is M1+X,
+C3 is C1+Y,
+safe(M2,C2,M3,C3).
+AI Lab – Experiment 8
+(Mu, CL, MR, CR, Po. Boat)
+(¾?" in?,
+(¾? 0,0)
+more (1,4,
+M, = M-X
+Ca-C-Y
+'ni? in's &?
+M, = M, + ✗
+Cz = C, + Y
+Missionaries and Cannibals – PROLOG
+cross(state(M,C,M1,C1,right),
+state(M2,C2,M3,C3,left)) :-
+move(X,Y),
+M2 is M+X,
+C2 is C+Y,
+M3 is M1-X,
+C3 is C1-Y,
+safe(M2,C2,M3,C3).
+solve(Start, Goal, Path) :-
+dfs(Start, Goal, [Start], Path).
+dfs(Goal, Goal, _, [Goal]).
+dfs(State, Goal, Visited, [State|Path]) :-
+cross(State, Next),
+\+ member(Next, Visited),
+dfs(Next, Goal, [Next|Visited], Path).
 Query:
-?- symmetric_difference([1,2,3,4], [3,4,5,6], R).
-
-6. Complement
--------------
-complement(U, A, R) :-
-    difference(U, A, R).
-
+?- initial(Start), goal(Goal), solve(Start, Goal, Path).
+AI Lab – Experiment 8
+2. Water Jug Problem
+Problem:
+Two jugs are available:
+Jug A = 4 litres,
+Jug B = 3 litres
+Initially:
+(A, B) = (0, 0)
+The objective is to obtain exactly 2 litres in Jug A.
+Allowed Operations
+1
+Fill Jug A.
+2
+Fill Jug B.
+3
+Empty Jug A.
+4
+Empty Jug B.
+5
+Pour Jug A into Jug B.
+6
+Pour Jug B into Jug A.
+AI Lab – Experiment 8
+Water Jug – PROLOG
+initial(state(0,0)).
+goal(state(2,_)).
+% Fill Jug A
+move(state(A,B), state(4,B)) :-
+A < 4.
+% Fill Jug B
+move(state(A,B), state(A,3)) :-
+B < 3.
+% Empty Jug A
+move(state(A,B), state(0,B)) :-
+A > 0.
+% Empty Jug B
+move(state(A,B), state(A,0)) :-
+B > 0.
+AI Lab – Experiment 8
+Water Jug – PROLOG
+% Pour A into B
+move(state(A,B), state(A2,B2)) :-
+A > 0,
+B < 3,
+T is min(A,3-B),
+A2 is A-T,
+B2 is B+T.
+% Pour B into A
+move(state(A,B), state(A2,B2)) :-
+B > 0,
+A < 4,
+T is min(B,4-A),
+A2 is A+T,
+B2 is B-T.
+water_jug(Start, Path) :-
+dfs(Start, [Start], Path).
+dfs(State, _, [State]) :-
+goal(State).
+dfs(State, Visited, [State|Path]) :-
+move(State, Next),
+\+ member(Next, Visited),
+dfs(Next, [Next|Visited], Path).
+AI Lab – Experiment 8
+✓
+✓
 Query:
-?- complement([1,2,3,4,5,6,7], [2,4,6], R).
+?- initial(S), water_jug(S, Path).
+AI Lab – Experiment 8
+3. 8-Queens Problem
+Problem:
+Place eight queens on an 8 × 8 chessboard such that no two queens attack each other.
+Two queens must not be in the same:
+1 Row
+2 Column
+3 Diagonal
+Represent a solution as:
+[Q1, Q2, . . . , Q8]
+where Qi denotes the row occupied by the queen in column i.
+AI Lab – Experiment 8
+8-Queens – PROLOG
+:- use_module(library(clpfd)).
+queens_8(Qs) :-
+length(Qs, 8),
+Qs ins 1..8,
+all_distinct(Qs),
+safe_queens(Qs).
+safe_queens([]).
+safe_queens([Q|Qs]) :-
+no_attack(Q, Qs, 1),
+safe_queens(Qs).
+no_attack(_, [], _).
+no_attack(Q, [Q1|Qs], D) :-
+Q #\= Q1,
+abs(Q-Q1) #\= D,
+D1 #= D+1,
+no_attack(Q, Qs, D1).
+AI Lab – Experiment 8
+8-Queens – Query and Output
+Query:
+?- queens_8(Q).
+One possible solution:
+Q = [1, 5, 8, 6, 3, 7, 2, 4]
+This means:
+Column
+1
+2
+3
+4
+5
+6
+7
+8
+Row
+1
+5
+8
+6
+3
+7
+2
+4
+Verification
+All rows are different.
+All columns are different by representation.
+No two queens share a diagonal.
+AI Lab – Experiment 8
+4. Travelling Salesman Problem
+Problem:
+A salesman must visit four cities:
+A, B, C, D
+The travelling costs are:
+A
+B
+C
+D
+A
+0
+10
+15
+20
+B
+10
+0
+35
+25
+C
+15
+35
+0
+30
+D
+20
+25
+30
+0
+The salesman must:
+Start from city A.
+Visit every city exactly once.
+Return to city A.
+Find the minimum-cost tour.
+AI Lab – Experiment 8
+A
+B
+c
+Travelling Salesman – PROLOG
+distance(a,b,10).
+distance(a,c,15).
+distance(a,d,20).
+distance(b,a,10).
+distance(b,c,35).
+distance(b,d,25).
+distance(c,a,15).
+distance(c,b,35).
+distance(c,d,30).
+distance(d,a,20).
+distance(d,b,25).
+distance(d,c,30).
+AI Lab – Experiment 8
+Travelling Salesman – PROLOG
+tour_cost([_], 0).
+tour_cost([A,B|Rest], Cost) :-
+distance(A,B,C1),
+tour_cost([B|Rest], C2),
+Cost is C1 + C2.
+tsp(Start, BestTour, MinCost) :-
+findall(
+Cost-Tour,
+(
+permutation([b,c,d], P),
+append([Start|P], [Start], Tour),
+tour_cost(Tour, Cost)
+),
+Tours
+),
+sort(Tours, [MinCost-BestTour|_]).
+Query:
+?- tsp(a, Tour, Cost).
+AI Lab – Experiment 8
+Travelling Salesman – Result
+One minimum-cost tour is:
+A →B →D →C →A
+The total cost is:
+10 + 25 + 30 + 15 = 80
+Therefore,
+Minimum Cost = 80
+Another optimal tour is:
+A →C →D →B →A
+with:
+15 + 30 + 25 + 10 = 80
+AI Lab – Experiment 8
+Classical AI Search Problems
+Problem
+Search Concept
+Objective
+Missionaries
+and
+Cannibals
+State-space search
+Reach the goal while satisfying
+constraints
+Water Jug
+State-space search
+Obtain the required quantity of
+water
+8-Queens
+Constraint search
+Place eight non-attacking queens
+Travelling Salesman
+Permutation
+/
+opti-
+mization
+Find minimum-cost tour
+AI Lab – Experiment 8
+Important PROLOG Concepts Used
+Facts and rules
+Predicates and variables
+Recursion
+Lists
+Pattern matching
+Unification
+Backtracking
+State-space representation
+Constraint satisfaction
+Permutation generation
+Arithmetic evaluation
+AI Lab – Experiment 8
 
-7. AI Application — Union
--------------------------
-% Agent knowledge lists:
-% Agent1 = [human,mammal,intelligent].
-% Agent2 = [mammal,animal,living].
+EXPERIMENT 9
+==============
+Wumpus World: Prolog Program (Part 1)
+% experiment9_wumpus.pl
+% Environment facts
+wumpus(1,3).
+pit(3,1).
+pit(3,3).
+gold(2,3).
+% Grid boundaries: 1 to 4
+cell(X,Y) :-
+between(1,4,X),
+between(1,4,Y).
+% Orthogonal adjacency
+adjacent(X,Y,A,Y) :-
+A is X+1, A =< 4.
+adjacent(X,Y,A,Y) :-
+A is X-1, A >= 1.
+adjacent(X,Y,X,B) :-
+B is Y+1, B =< 4.
+adjacent(X,Y,X,B) :-
+B is Y-1, B >= 1.
+Wumpus World: Prolog Program (Part 2)
+% Percepts
+% Stench: adjacent to the Wumpus
+stench(X,Y) :-
+adjacent(X,Y,A,B),
+wumpus(A,B).
+% Breeze: adjacent to a pit
+breeze(X,Y) :-
+adjacent(X,Y,A,B),
+pit(A,B).
+% Glitter: gold in the current cell
+glitter(X,Y) :-
+gold(X,Y).
+Wumpus World: Prolog Program (Part 2)
+% Safe cell: no Wumpus and no pit
+safe(X,Y) :-
+cell(X,Y),
+\+ wumpus(X,Y),
+\+ pit(X,Y).
+% Gold is located in a safe cell
+find_gold(X,Y) :-
+gold(X,Y),
+safe(X,Y).
+% Identify all safe cells
+safe_cells(Cells) :-
+findall((X,Y), safe(X,Y), Cells).
+% Example queries:
+% ?- stench(1,2).
+% ?- breeze(2,1).
+% ?- glitter(2,3).
+% ?- safe(2,3).
+% ?- find_gold(X,Y).
+% ?- safe_cells(Cells).
+Important: The predicate \+ represents negation as failure in Prolog.
+Monkey–Banana: Prolog Program (Part 1)
+% experiment9_monkey.pl
+% state(MonkeyPosition, BoxPosition,
+%
+MonkeyStatus, HasBanana)
+% Walk from the door to the box
+move(
+state(door, center, floor, no),
+walk,
+state(center, center, floor, no)
+).
+% Push the box beneath the banana
+move(
+state(center, center, floor, no),
+push,
+state(under, under, floor, no)
+).
+Monkey–Banana: Prolog Program (Part 2)
+% Climb onto the box
+move(
+state(under, under, floor, no),
+climb,
+state(under, under, onbox, no)
+).
+% Grasp the banana
+move(
+state(under, under, onbox, no),
+grasp,
+state(under, under, onbox, yes)
+).
+Monkey–Banana: Prolog Program (Part 2)
+% Goal condition
+goal(state(_, _, _, yes)).
+% Search for a sequence of actions
+solve(State, []) :-
+goal(State).
+solve(State, [Action|Rest]) :-
+move(State, Action, NextState),
+solve(NextState, Rest).
+% Initial state
+initial(state(door, center, floor, no)).
+% Find a plan from the initial state
+monkey_banana(Plan) :-
+initial(State),
+solve(State, Plan).
+% Query:
+% ?- monkey_banana(Plan).
+The solve/2 predicate recursively applies legal actions until the goal condition is satisﬁed.
 
-?- union([human,mammal,intelligent],
-         [mammal,animal,living],
-         R).
-
-8. AI Application — Pending Actions
------------------------------------
-?- difference([irrigation,fertilizer,pesticide,harvesting],
-              [irrigation,pesticide],
-              R).
-
-9. Challenging Task Queries Shown in the PDF
---------------------------------------------
-% Common and unique knowledge
-?- intersection([ai,machine_learning,python,logic],
-                [machine_learning,deep_learning,python],
-                Common).
-
-?- difference([ai,machine_learning,python,logic],
-              [machine_learning,deep_learning,python],
-              Unique).
-
-% Compare symptoms
-?- intersection([fever,cough,headache,fatigue],
-                [cough,fatigue,sore_throat,body_pain],
-                Common).
-
-?- difference([fever,cough,headache,fatigue],
-              [cough,fatigue,sore_throat,body_pain],
-              Unique).
-
-?- symmetric_difference([fever,cough,headache,fatigue],
-                        [cough,fatigue,sore_throat,body_pain],
-                        Different).
-
-% Compare model features
-?- intersection([age,income,education,experience,location],
-                [income,education,credit_score,location],
-                Common).
-
-?- difference([age,income,education,experience,location],
-              [income,education,credit_score,location],
-              OnlyModel1).
-
-?- difference([income,education,credit_score,location],
-              [age,income,education,experience,location],
-              OnlyModel2).
-
-% Crop recommendation / complement
-?- complement([cotton,rice,maize,wheat,sugarcane,groundnut],
-              [rice,maize,groundnut],
-              NotSuitable).
+EXPERIMENT 10
+==============
+Exp-10_Development of a Medical Expert System with(1).pdf
+==============================================================================
+Prolog Program: Knowledge Base
+% Common cold
+associated_symptom(common_cold, runny_nose).
+associated_symptom(common_cold, sneezing).
+associated_symptom(common_cold, sore_throat).
+associated_symptom(common_cold, mild_cough).
+% Allergic rhinitis
+associated_symptom(allergic_rhinitis, sneezing).
+associated_symptom(allergic_rhinitis, runny_nose).
+associated_symptom(allergic_rhinitis, itchy_eyes).
+% Migraine-like headache
+associated_symptom(migraine_like, headache).
+associated_symptom(migraine_like, nausea).
+associated_symptom(migraine_like, light_sensitivity).
+% Possible dehydration
+associated_symptom(possible_dehydration, thirst).
+associated_symptom(possible_dehydration, dizziness).
+associated_symptom(possible_dehydration, reduced_urination).
+Prolog Program: Recommendations
+% Recommendations for matching patterns
+recommendation(common_cold,
+’Rest, drink fluids if able, and monitor symptoms.
+Consult a healthcare professional if symptoms
+worsen, persist, or cause concern.’).
+recommendation(allergic_rhinitis,
+’Reduce exposure to possible allergens.
+Seek professional advice if symptoms persist.’).
+recommendation(migraine_like,
+’Seek medical advice for recurrent or severe
+headaches, especially if the pattern changes.’).
+recommendation(possible_dehydration,
+’Take fluids in small amounts if able.
+Seek urgent care for fainting, confusion,
+inability to drink, or worsening symptoms.’).
+% Emergency warning signs
+emergency_symptom(severe_breathing_difficulty).
+emergency_symptom(chest_pain).
+emergency_symptom(confusion).
+emergency_symptom(unconsciousness).
+Prolog Program: Symptom Matching
+% Count matching symptoms for a condition
+match_count(Condition, Symptoms, Count) :-
+findall(
+Symptom,
+(member(Symptom, Symptoms),
+associated_symptom(Condition, Symptom)),
+Matches
+),
+length(Matches, Count).
+% Identify possible condition patterns
+possible_condition(Condition, Symptoms) :-
+associated_symptom(Condition, _),
+match_count(Condition, Symptoms, Count),
+Count > 0.
+% Retrieve recommendations for a condition
+get_condition_recommendation(Condition, Text) :-
+recommendation(Condition, Text).
+Prolog Program: Recommendation Engine
+get_recommendation(Symptoms, Result) :-
+(
+member(Symptom, Symptoms),
+emergency_symptom(Symptom)
+->
+Result =
+’EMERGENCY: Seek emergency medical care now.’
+;
+findall(
+Count-Condition,
+(possible_condition(Condition, Symptoms),
+match_count(Condition, Symptoms, Count)),
+Matches
+),
+(
+Matches = []
+->
+Result =
+’No matching pattern found. Consult a
+healthcare professional for assessment.’
+;
+findall(
+Text,
+(member(_-Condition, Matches),
+recommendation(Condition, Text)),
+Texts
+),
+atomic_list_concat(Texts, ’\n’, Result)
+)
+).
+Prolog Program: Display Possible Conditions
+report_conditions(Symptoms) :-
+(
+member(Symptom, Symptoms),
+emergency_symptom(Symptom)
+->
+writeln(
+’Emergency warning sign detected. Seek emergency care.’
+)
+;
+findall(
+Count-Condition,
+(possible_condition(Condition, Symptoms),
+match_count(Condition, Symptoms, Count)),
+Matches
+),
+(
+Matches = []
+->
+writeln(’No matching condition pattern found.’)
+;
+sort(0, @>=, Matches, Ranked),
+writeln(’Possible matching conditions:’),
+print_ranked(Ranked)
+)
+).
+print_ranked([]).
+print_ranked([Count-Condition|Rest]) :-
+format(’~w (matching symptoms: ~w)~n’,
+[Condition, Count]),
+print_ranked(Rest).
+Prolog Program: Main Predicate
+medical_expert(Symptoms) :-
+writeln(’--- Medical Expert System ---’),
+report_conditions(Symptoms),
+get_recommendation(Symptoms, Result),
+nl,
+writeln(’Recommendation:’),
+writeln(Result),
+nl,
+writeln(
+’Educational output only; not a medical diagnosis.’
+).
